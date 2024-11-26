@@ -8,6 +8,14 @@ class UserDAO(BaseDAO):
     model = User
 
     @classmethod
+    async def add(cls, email: str, hashed_password: str):
+        async with async_session_maker() as session:
+            new_user = User(email=email, hashed_password=hashed_password)
+            session.add(new_user)
+            await session.commit()
+            return new_user
+
+    @classmethod
     async def update(cls, user: User):
         async with async_session_maker() as session:
             stmt = (
@@ -17,4 +25,3 @@ class UserDAO(BaseDAO):
             )
             await session.execute(stmt)
             await session.commit()
-            
